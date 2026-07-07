@@ -1,14 +1,15 @@
 # Setting up Reading Block (one time, ~5 minutes)
 
-This guide gets the extension running in Chrome and connected to your Google
+This guide gets the extension running in Chrome and connected to your iCloud
 Calendar. You only do this once. Follow it top to bottom.
 
 There are two halves:
 - **Part A** loads the extension into Chrome.
-- **Part B** gives it permission to use your Google Calendar.
+- **Part B** gives it permission to use your iCloud Calendar.
 
-We do Part A first because Part B needs a code (the "Extension ID") that only
-appears after Part A.
+Unlike the Google version, there's no developer console and no project to
+create. iCloud uses an **app-specific password** — a one-time code you generate
+on Apple's site and paste into the extension's Settings.
 
 ---
 
@@ -22,63 +23,40 @@ appears after Part A.
 5. In the file picker, select **this project's folder** (the one containing
    `manifest.json`), then click Select.
 6. A card titled **Reading Block** appears.
-7. On that card, find **ID:** followed by a long string of letters. **Copy that
-   whole ID and keep it handy.** You'll need it in Part B.
-
-> Keep the project folder where it is. Chrome ties the Extension ID to the
-> folder's location, so if you move the folder later, the ID changes and you'd
-> have to redo Part B.
 
 If the icon is hidden, click the puzzle-piece icon in Chrome's toolbar and pin
 "Reading Block".
 
 ---
 
-## Part B: Give it permission to use Google Calendar
+## Part B: Connect your iCloud Calendar
 
-Google requires every app to register before it can touch your calendar. It's
-free. You'll create a "project," switch on the Calendar feature, and generate a
-login ID that you paste into the extension.
+iCloud won't accept your normal Apple ID password from a third-party app. Instead
+you create an **app-specific password**: a one-off code that only this extension
+uses, and that you can revoke any time without changing your real password.
 
-### B1. Create a Google Cloud project
-1. Go to **https://console.cloud.google.com** and sign in.
-2. At the top, click the project dropdown, then **New Project**. Name it
-   `Reading Block` and click **Create**. Make sure it's the selected project.
+### B1. Create an app-specific password
+1. Go to **https://appleid.apple.com** and sign in.
+2. Open **Sign-In & Security** → **App-Specific Passwords**.
+3. Click **+** (or **Generate an app-specific password**), name it
+   `Reading Block`, and confirm.
+4. Apple shows a password like `abcd-efgh-ijkl-mnop`. **Copy it now** — Apple
+   won't show it again. (If you lose it, just generate a new one.)
 
-### B2. Turn on the Calendar API
-1. In the top search bar, type **Google Calendar API** and click it.
-2. Click **Enable**.
+> Two-factor authentication must be on for your Apple ID (it is for almost
+> everyone). App-specific passwords aren't available without it.
 
-### B3. Set up the consent screen
-1. Left menu → **APIs & Services** → **OAuth consent screen** (in newer consoles
-   this may appear as **Google Auth Platform** → **Audience**).
-2. Choose **External**, click **Create**.
-3. Fill in the required fields (app name `Reading Block`, your email for the
-   support and developer contact fields). Save and continue through the next
-   screens; you can skip "Scopes" and "Optional info."
-4. On **Test users**, click **Add Users** and add your own Google email address,
-   then Save. (While the app is in "Testing" mode, only the test users you list
-   can use it. That's fine, it's just you.)
+### B2. Paste it into the extension
+1. Right-click the Reading Block toolbar icon → **Settings** (or open the card on
+   `chrome://extensions` → **Extension options**).
+2. In the **Connect iCloud** card, enter:
+   - **Apple ID:** the email you sign in to iCloud with (e.g. `you@icloud.com`).
+   - **App-specific password:** the code from B1. (Use **Show** to check it.)
+3. Click **Test connection**. Within a second or two you should see
+   **"Connected. Reading blocks will be booked on your iCloud calendar."**
+4. Click **Save settings** at the bottom.
 
-### B4. Create the login ID (the "OAuth client")
-1. Left menu → **APIs & Services** → **Credentials**.
-2. Click **+ Create Credentials** → **OAuth client ID**.
-3. **Application type:** choose **Chrome Extension** (older consoles call this
-   **Chrome App**).
-4. Name it `Reading Block`.
-5. In the **Item ID / Application ID** field, paste the **Extension ID** you
-   copied in Part A, step 7.
-6. Click **Create** and copy the **Client ID** (it ends in
-   `.apps.googleusercontent.com`).
-
-### B5. Put the Client ID into the extension
-1. Open `manifest.json` in this project folder with any text editor.
-2. Find `PASTE_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com`.
-3. Replace that whole placeholder (keep the quotes) with your Client ID. Save.
-
-### B6. Reload the extension
-1. Back on `chrome://extensions`, click the circular **reload** arrow on the
-   Reading Block card.
+That's it — your credentials live only in this browser.
 
 ---
 
@@ -86,24 +64,39 @@ login ID that you paste into the extension.
 
 1. Open five articles and **left-click the Reading Block icon once** on each. A
    small "Saved" confirmation appears in the corner each time.
-2. On the fifth save, Google asks permission to add events to your calendar.
-   Because this is your own personal, unpublished app, it may warn that the app
-   is "unverified." That's expected: click **Advanced**, then **Go to Reading
-   Block (unsafe)**, then **Allow**.
-3. Done. A 30-minute reading block appears on the next free day in your chosen
-   window, with the five links in the event notes.
+2. On the fifth save, the extension finds the next free slot in your chosen
+   window and books a 30-minute reading block on your iCloud calendar, with the
+   five links in the event notes. The corner toast confirms when and gives you
+   an **Undo**.
+3. When the block ends, a small checklist pops up asking what you finished;
+   anything left rolls into your next session.
+
+---
+
+## Choosing which calendar it books on
+
+By default the extension books on your **primary** iCloud calendar. While you're
+trying it out, you may prefer a throwaway calendar so nothing lands on your real
+schedule:
+
+1. In Apple Calendar (Mac) or iCloud.com, create a new calendar, e.g. `Reading`.
+2. In the extension's Settings → **Calendar** card, set **Calendar ID** to that
+   calendar's **name** (`Reading`) instead of `primary`, and Save.
 
 ---
 
 ## If something goes wrong
-- **"Access blocked ... has not completed the Google verification process"
-  (Error 403: access_denied):** your Google account isn't on the tester list. Go
-  to the Google Cloud Console → APIs & Services → OAuth consent screen (or Google
-  Auth Platform → Audience) → Test users → Add users → add your own email → Save.
-  Wait a minute and try again.
-- **Consent never appears / "bad client id":** the Client ID in `manifest.json`
-  doesn't match, or the Extension ID in the OAuth client is wrong. Re-check Part A
-  step 7 and Part B steps 4–5, then reload.
+- **"iCloud rejected your Apple ID or app-specific password":** double-check the
+  Apple ID email, and make sure you used the **app-specific** password (with the
+  dashes), not your normal Apple ID password. Generate a fresh one if unsure.
+- **Test connection hangs or errors on discovery:** confirm you're online and
+  that two-factor authentication is enabled on your Apple ID (required for
+  app-specific passwords).
+- **"No writable iCloud event calendar was found":** the account has no standard
+  calendar to write to. Create one in Apple Calendar and try again.
+- **"No calendar named … was found":** the **Calendar ID** in Settings doesn't
+  match any calendar name on the account. Set it back to `primary`, or fix the
+  name.
 - **"No free slot found":** your chosen window had no meeting-free block on a free
   day in the lookahead period. Widen the window or days in Settings.
 - **Nothing happens on the 5th save:** open `chrome://extensions`, click "service

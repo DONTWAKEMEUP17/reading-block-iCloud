@@ -409,7 +409,8 @@ body.options {
 
 input[type="time"],
 input[type="number"],
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
   font-family: var(--sans);
   font-size: 14px;
   color: var(--ink);
@@ -422,7 +423,8 @@ input[type="text"] {
 input[type="number"] {
   width: 76px;
 }
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
   width: 230px;
 }
 input:focus {
@@ -486,6 +488,67 @@ input:focus {
 }
 .saved-note.show {
   opacity: 1;
+}
+
+/* --- iCloud connect card ------------------------------------------------ */
+.pw-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pw-control input[type="password"],
+.pw-control input[type="text"] {
+  width: 178px;
+}
+.pw-toggle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: 8px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.pw-toggle:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+.connect-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+}
+.test-btn {
+  background: var(--paper-3);
+  color: var(--ink);
+  padding: 10px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color 0.15s ease;
+}
+.test-btn:hover {
+  border-color: var(--green);
+}
+.test-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.connect-status {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.connect-status.ok {
+  color: var(--green);
+}
+.connect-status.err {
+  color: #a94b33;
+}
+.connect-status.pending {
+  color: var(--ink-soft);
 }
 
 /* --- Dashboard additions (reading list + section nav) ------------------- */

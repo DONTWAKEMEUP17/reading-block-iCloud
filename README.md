@@ -1,12 +1,16 @@
 # Reading Block
 
 **Save articles with one click. Every five saves, your browser books you a quiet
-30-minute reading block on your Google Calendar so you actually read them.**
+30-minute reading block on your iCloud Calendar so you actually read them.**
 
 📺 [Watch the demo video (2 minutes)](https://www.youtube.com/watch?v=Q8g1hod552g)
 
-> This is the **Google Calendar** version. If you prefer Feishu/Lark Calendar,
-> check out the [Feishu/Lark version](https://github.com/zarazhangrui/reading-block-lark).
+> This is the **iCloud Calendar** version, adapted from the original
+> [Reading Block](https://github.com/zarazhangrui/reading-block) by Zara Zhang.
+> If you prefer Google Calendar, use the
+> [original](https://github.com/zarazhangrui/reading-block); for Feishu/Lark
+> Calendar, see the
+> [Feishu/Lark version](https://github.com/zarazhangrui/reading-block-lark).
 
 Reading Block is a Chrome extension for people who save a lot of "I'll read this
 later" links and never get back to them. Instead of another list that grows
@@ -43,7 +47,7 @@ It's simple on purpose. No account to create, no app to open, no list to manage.
   what you finished; anything left over goes back into your list for next time.
 
 Your reading list lives **locally in your browser**. There's no server and no
-sign-up. The only thing it connects to is your own Google Calendar, to create
+sign-up. The only thing it connects to is your own iCloud Calendar, to create
 the blocks.
 
 ---
@@ -51,22 +55,23 @@ the blocks.
 ## Setup (about 5 minutes, no coding)
 
 There are two halves: loading the extension into Chrome, and giving it permission
-to use your Google Calendar. The Google permission part is a one-time setup in
-Google's developer console. **Full step-by-step instructions are in
-[SETUP.md](SETUP.md)** and are written for non-technical readers.
+to use your iCloud Calendar. There's no developer console — iCloud connects with
+an **app-specific password** you generate on Apple's site. **Full step-by-step
+instructions are in [SETUP.md](SETUP.md)** and are written for non-technical
+readers.
 
 The short version:
 
 1. **Load the extension.** In Chrome, go to `chrome://extensions`, turn on
    **Developer mode**, click **Load unpacked**, and select this project folder.
-   Copy the **Extension ID** Chrome shows you.
-2. **Create a free Google project.** In the Google Cloud Console, make a project,
-   enable the **Google Calendar API**, set up the consent screen, and create an
-   **OAuth client ID** of type **Chrome Extension** using your Extension ID.
-3. **Connect it.** Paste the Client ID into `manifest.json` (replacing the
-   placeholder), then reload the extension.
+2. **Create an app-specific password.** At
+   [appleid.apple.com](https://appleid.apple.com) → Sign-In & Security →
+   App-Specific Passwords, generate one named `Reading Block` and copy it.
+3. **Connect it.** Open the extension's **Settings**, paste your Apple ID and the
+   app-specific password into the **Connect iCloud** card, and click **Test
+   connection**.
 
-[SETUP.md](SETUP.md) walks through every click.
+[SETUP.md](SETUP.md) walks through every step.
 
 ---
 
@@ -83,12 +88,23 @@ The short version:
 ## Privacy
 
 - Your reading list never leaves your browser; it's stored locally.
-- The extension only contacts Google Calendar, using your own Google account, to
-  create and manage reading blocks.
+- The extension only contacts iCloud Calendar, using your own Apple ID and an
+  app-specific password stored locally in the browser, to create and manage
+  reading blocks.
 - There is no analytics, no server, and no third party involved.
 
 ---
 
+## Credits
+
+This is an iCloud Calendar adaptation of
+[Reading Block](https://github.com/zarazhangrui/reading-block) by Zara Zhang,
+used under the MIT License. The original books reading blocks on Google Calendar;
+this version books them on iCloud via CalDAV (with an app-specific password
+instead of Google OAuth). All credit for the original idea and design goes to the
+upstream project.
+
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. The original work is Copyright (c) 2026 Reading Block contributors; the
+iCloud CalDAV adaptation is Copyright (c) 2026 Xiaoyu Zhong. See [LICENSE](LICENSE).

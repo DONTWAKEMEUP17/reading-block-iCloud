@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Reading Block",
   "version": "0.1.0",
-  "description": "Save articles with one click. Every 5 saves becomes a reading block on your Google Calendar.",
+  "description": "Save articles with one click. Every 5 saves becomes a reading block on your iCloud Calendar.",
 
   "action": {
     "default_title": "Save this page to Reading Block",
@@ -31,15 +31,7 @@
     "type": "module"
   },
 
-  "permissions": ["storage", "identity", "activeTab", "contextMenus", "scripting", "alarms"],
+  "permissions": ["storage", "activeTab", "contextMenus", "scripting", "alarms"],
 
-  "host_permissions": ["https://www.googleapis.com/*"],
-
-  "oauth2": {
-    "client_id": "PASTE_YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com",
-    "scopes": [
-      "https://www.googleapis.com/auth/calendar.events",
-      "https://www.googleapis.com/auth/calendar.readonly"
-    ]
-  }
+  "host_permissions": ["https://*.icloud.com/*"]
 }

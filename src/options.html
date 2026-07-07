@@ -41,6 +41,44 @@
         </div>
 
         <section class="card">
+          <h2>Connect iCloud</h2>
+          <p class="card-note">
+            Reading Block books straight onto your iCloud calendar. It needs your Apple ID and an
+            <strong>app-specific password</strong> &mdash; not your normal Apple ID password. Create
+            one at
+            <a href="https://appleid.apple.com" target="_blank" rel="noreferrer">appleid.apple.com</a>
+            &rarr; Sign-In &amp; Security &rarr; App-Specific Passwords. It's stored only in this
+            browser.
+          </p>
+
+          <div class="field">
+            <div>
+              <div class="field-label">Apple ID</div>
+              <div class="field-hint">The email you sign in to iCloud with.</div>
+            </div>
+            <div class="field-control">
+              <input type="text" id="appleId" placeholder="you@icloud.com" autocomplete="username" />
+            </div>
+          </div>
+
+          <div class="field">
+            <div>
+              <div class="field-label">App-specific password</div>
+              <div class="field-hint">Looks like xxxx-xxxx-xxxx-xxxx.</div>
+            </div>
+            <div class="field-control pw-control">
+              <input type="password" id="appPassword" placeholder="xxxx-xxxx-xxxx-xxxx" autocomplete="off" />
+              <button type="button" class="pw-toggle" id="pwToggle">Show</button>
+            </div>
+          </div>
+
+          <div class="connect-foot">
+            <button type="button" class="test-btn" id="testConnection">Test connection</button>
+            <span class="connect-status" id="connectStatus"></span>
+          </div>
+        </section>
+
+        <section class="card">
           <h2>When can you read?</h2>
           <p class="card-note">
             Reading Block only books on these days, inside this time window, and only where you
@@ -104,9 +142,9 @@
         <section class="card">
           <h2>Calendar</h2>
           <p class="card-note">
-            Leave the calendar as <strong>primary</strong> for your main Google Calendar. While
-            testing, paste a <strong>test</strong> calendar's ID here so nothing lands on your real
-            schedule.
+            Leave this as <strong>primary</strong> to book onto your main iCloud calendar. While
+            testing, type the <strong>name</strong> of a separate calendar (e.g. "Reading") so
+            nothing lands on your real schedule.
           </p>
 
           <div class="field">
@@ -120,7 +158,7 @@
           <div class="field">
             <div>
               <div class="field-label">Calendar ID</div>
-              <div class="field-hint">"primary", or a test calendar's ID (looks like an email).</div>
+              <div class="field-hint">"primary", or the name of a calendar to book into.</div>
             </div>
             <div class="field-control"><input type="text" id="calendarId" /></div>
           </div>

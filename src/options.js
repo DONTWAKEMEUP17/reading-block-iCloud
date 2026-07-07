@@ -168,6 +168,8 @@ function buildDays(active) {
 
 function fillSettings(settings) {
   buildDays(settings.days);
+  document.getElementById("appleId").value = settings.appleId || "";
+  document.getElementById("appPassword").value = settings.appPassword || "";
   document.getElementById("windowStart").value = settings.windowStart;
   document.getElementById("windowEnd").value = settings.windowEnd;
   document.getElementById("blockMinutes").value = settings.blockMinutes;
@@ -185,6 +187,8 @@ function collectSettings() {
   };
   return {
     days: [...selectedDays].sort((a, b) => a - b),
+    appleId: document.getElementById("appleId").value.trim(),
+    appPassword: document.getElementById("appPassword").value.trim(),
     windowStart: document.getElementById("windowStart").value || DEFAULT_SETTINGS.windowStart,
     windowEnd: document.getElementById("windowEnd").value || DEFAULT_SETTINGS.windowEnd,
     blockMinutes: num("blockMinutes", 5, 240, DEFAULT_SETTINGS.blockMinutes),
@@ -193,6 +197,63 @@ function collectSettings() {
     eventTitle: document.getElementById("eventTitle").value.trim() || DEFAULT_SETTINGS.eventTitle,
     calendarId: document.getElementById("calendarId").value.trim() || DEFAULT_SETTINGS.calendarId,
   };
+}
+
+// --- iCloud connection: password reveal + "Test connection" -----------------
+
+function setConnectStatus(kind, message) {
+  const el = document.getElementById("connectStatus");
+  el.className = "connect-status" + (kind ? ` ${kind}` : "");
+  el.textContent = message;
+}
+
+// Run the real CalDAV discovery handshake with whatever's typed right now, so a
+// wrong Apple ID or password surfaces here instead of five saves later. We save
+// the settings first, then ask the SERVICE WORKER to do the actual verifying:
+// only the service worker gets the host-permission CORS bypass in MV3, so a
+// CalDAV request made straight from this page would fail with "Failed to fetch".
+async function testConnection() {
+  const btn = document.getElementById("testConnection");
+  const settings = collectSettings();
+
+  if (!settings.appleId || !settings.appPassword) {
+    setConnectStatus("err", "Enter your Apple ID and app-specific password first.");
+    return;
+  }
+
+  btn.disabled = true;
+  setConnectStatus("pending", "Connecting to iCloud…");
+  try {
+    await setSettings({ ...(await getSettings()), ...settings });
+    const res = await chrome.runtime.sendMessage({ type: "TEST_CONNECTION" });
+    if (res?.ok) {
+      setConnectStatus("ok", "Connected. Reading blocks will be booked on your iCloud calendar.");
+    } else {
+      setConnectStatus("err", res?.error || "Couldn't connect to iCloud.");
+    }
+  } catch (err) {
+    setConnectStatus("err", err?.message || "Couldn't reach the extension. Try reloading it.");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function wireConnectionControls() {
+  // Show/Hide the app-specific password.
+  const toggle = document.getElementById("pwToggle");
+  const pw = document.getElementById("appPassword");
+  toggle.addEventListener("click", () => {
+    const showing = pw.type === "text";
+    pw.type = showing ? "password" : "text";
+    toggle.textContent = showing ? "Show" : "Hide";
+  });
+
+  document.getElementById("testConnection").addEventListener("click", testConnection);
+
+  // Editing either credential clears a stale result so it can't mislead.
+  for (const id of ["appleId", "appPassword"]) {
+    document.getElementById(id).addEventListener("input", () => setConnectStatus("", ""));
+  }
 }
 
 function flashSaved() {
@@ -208,6 +269,7 @@ function flashSaved() {
 async function init() {
   await renderList();
   fillSettings(await getSettings());
+  wireConnectionControls();
 
   document.getElementById("save").addEventListener("click", async () => {
     const next = collectSettings();

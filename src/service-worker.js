@@ -22,7 +22,7 @@ import {
   removeReview,
 } from "./lib/storage.js";
 import { nextBatch } from "./lib/batch.js";
-import { scheduleReadingBlock, deleteReadingEvent } from "./lib/calendar.js";
+import { scheduleReadingBlock, deleteReadingEvent, verifyConnection } from "./lib/caldav.js";
 
 const DASHBOARD = "src/options.html";
 const REVIEW_ALARM_PREFIX = "review:";
@@ -116,6 +116,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       .catch(() => sendResponse({ ok: false }));
     return true;
   }
+  // The Settings page asks us to verify iCloud credentials. This MUST run here
+  // (in the service worker) rather than in the options page: only the service
+  // worker gets the host-permission CORS bypass in MV3, so a CalDAV request from
+  // the page itself fails with "Failed to fetch".
+  if (message?.type === "TEST_CONNECTION") {
+    getSettings()
+      .then((settings) => verifyConnection(settings))
+      .then(() => sendResponse({ ok: true }))
+      .catch((err) => sendResponse({ ok: false, error: err?.message || "Couldn't connect to iCloud." }));
+    return true;
+  }
 });
 
 // Reverse a booking completely: delete the calendar event, put those reads back
@@ -204,7 +215,7 @@ function deepreadToast(opts) {
     line1.textContent = "Saved, but calendar booking failed";
     line1.style.cssText = "font-weight:700;";
     const line2 = document.createElement("div");
-    line2.textContent = shortenToastText(opts.note || "Google Calendar setup needs attention.");
+    line2.textContent = shortenToastText(opts.note || "iCloud Calendar setup needs attention.");
     line2.style.cssText =
       "color:#6d6049;margin-top:3px;font-size:12px;line-height:1.35;word-break:break-word;";
     text.append(line1, line2);

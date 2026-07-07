@@ -19,8 +19,15 @@ export const DEFAULT_SETTINGS = {
   minLeadMinutes: 120,
   batchSize: 5,
   lookaheadDays: 14, // search up to two weeks ahead for a free slot
-  calendarId: "primary", // change to a TEST calendar id while testing
+  calendarId: "primary", // "primary" = first writable iCloud event calendar;
+  // otherwise the display name of the calendar to book into (e.g. "Reading").
   eventTitle: "Reading Block",
+
+  // iCloud credentials. Left blank until the user connects in Settings: their
+  // Apple ID and an APP-SPECIFIC password (created at appleid.apple.com). These
+  // are what caldav.js uses for Basic auth — there is no OAuth for iCloud.
+  appleId: "",
+  appPassword: "",
 };
 
 // --- Reading list -----------------------------------------------------------
